@@ -127,7 +127,7 @@
     "postcss-preset-env": "10.6.1",
     "prettier": "3.8.1",
     "puppeteer": "24.39.0",
-    "purgecss": "^6.0.0",
+    "purgecss": "^8.0.0",
     "sharp": "^0.33.5",
     "size-limit": "12.1.0",
     "stylelint": "17.4.0",
