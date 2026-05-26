@@ -1,0 +1,68 @@
+# Environment
+.env
+.env.local
+.env.production
+.env.staging
+!.env.template
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+.eggs/
+*.whl
+.venv/
+.venv-flask/
+venv/
+
+# Dependencies
+node_modules/
+vendor/
+
+# Build outputs
+dist/
+build/
+_site/
+.next/
+out/
+
+# Database
+*.db
+*.sqlite3
+dump.rdb
+instance/
+
+# IDE
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Secrets & keys
+*.pem
+*.key
+*.p12
+*.keystore
+*.jks
+credentials.json
+token.json
+service-account-*.json
+
+# Test & coverage
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+coverage/
+
+# Logs
+*.log

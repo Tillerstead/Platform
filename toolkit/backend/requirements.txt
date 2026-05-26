@@ -1,0 +1,34 @@
+# Backend dependencies for Tillerstead Toolkit
+# ── Core framework ──────────────────────────────────────────
+fastapi==0.115.12
+uvicorn[standard]==0.34.3
+pydantic==2.11.7
+pydantic-settings==2.9.1
+python-multipart==0.0.27  # sec: CVE fix, was 0.0.20 (HIGH vuln < 0.0.27)
+python-dotenv==1.1.1
+
+# ── Database ────────────────────────────────────────────────
+sqlalchemy==2.0.41
+alembic==1.15.2
+psycopg2-binary==2.9.10
+aiosqlite==0.21.0
+
+# ── Auth (not yet imported — ready for auth feature) ───────
+pyjwt[crypto]==2.12.0  # sec: CVE fix, was 2.10.1 (HIGH vuln <= 2.11.0)
+passlib[bcrypt]==1.7.4
+
+# ── HTTP / networking ──────────────────────────────────────
+httpx==0.28.1
+
+# ── Data / export ──────────────────────────────────────────
+pandas==2.3.0
+openpyxl==3.1.5
+reportlab==4.4.0
+
+# ── Background jobs ────────────────────────────────────────
+redis==6.2.0
+rq==2.3.0
+
+# ── Fuzzy matching (ready for search feature) ──────────────
+# Replaced deprecated fuzzywuzzy + yanked python-Levenshtein
+rapidfuzz==3.13.0

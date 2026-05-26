@@ -1,0 +1,34 @@
+# Admin Panel - Git Ignore
+
+# Environment variables
+.env
+
+# 2FA secrets (sensitive - never commit)
+config/2fa-secrets.json
+
+# Business data (local JSON store - sensitive client info)
+data/
+
+# Logs
+*.log
+logs/
+
+# Session data
+sessions/
+
+# Backup files (optional - may want to track these)
+# *.backup.*
+
+# Node modules (installed at root level)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

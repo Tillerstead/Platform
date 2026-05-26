@@ -1,0 +1,203 @@
+/* Design Tokens Compatibility Layer — Tillerstead
+   ═══════════════════════════════════════════════════════════════════════════
+   
+   Purpose:
+   Maps Tillerstead's custom CSS variables to @evident-technologies/design-tokens
+   without modifying any existing CSS files.
+   
+   Load Order:
+   1. This file (compat layer) — establishes mappings
+   2. @evident-technologies/design-tokens (if available)
+   3. All other tillerstead CSS files (use mapped variables)
+   
+   Safety:
+   - All mappings include fallbacks to original --tiller-* values
+   - All original --tiller-* variables still work unchanged
+   - Zero impact on production CSS unless design-tokens is imported
+   - Gradual migration path: new files use tokens, old files use compat layer
+   
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ───────────────────────────────────────────────────────────────────────
+     COLORS — Primary Brand
+     ───────────────────────────────────────────────────────────────────────
+     Tillerstead historical palette → Evident gemstone palette
+  */
+
+  /* Primary (Teal → Sapphire) */
+  --tiller-primary: var(--color-sapphire, #0066cc);
+  --tiller-primary-light: var(--color-sapphire-light, #3385ff);
+  --tiller-primary-dark: var(--color-sapphire-dark, #004099);
+
+  /* Secondary (Emerald) */
+  --tiller-secondary: var(--color-emerald, #048855);
+  --tiller-secondary-light: var(--color-emerald-light, #3db87f);
+  --tiller-secondary-dark: var(--color-emerald-dark, #024f34);
+
+  /* Accent (Gold → Topaz) */
+  --tiller-accent-gold: var(--color-topaz, #d4a017);
+  --tiller-accent-gold-light: var(--color-topaz-light, #e6c54f);
+  --tiller-accent-gold-dark: var(--color-topaz-dark, #9d7e0f);
+
+  /* Alert (Ruby) */
+  --tiller-alert-red: var(--color-ruby, #c91f16);
+  --tiller-alert-red-light: var(--color-ruby-light, #e8504a);
+
+  /* ───────────────────────────────────────────────────────────────────────
+     SURFACES — Page & Component Backgrounds
+     ───────────────────────────────────────────────────────────────────────
+  */
+
+  --tiller-surface-cream: var(--color-surface, #f9f7f2);
+  --tiller-surface-white: var(--color-surface-elevated, #ffffff);
+  --tiller-surface-light-gray: var(--color-surface-sunken, #f0ede8);
+
+  /* ───────────────────────────────────────────────────────────────────────
+     TEXT — Foreground Colors
+     ───────────────────────────────────────────────────────────────────────
+  */
+
+  --tiller-text-dark: var(--color-on-surface, #1c1c1c);
+  --tiller-text-mid: var(--color-on-surface-muted, #404040);
+  --tiller-text-light: var(--color-on-surface-faint, #6a6a6a);
+
+  /* ───────────────────────────────────────────────────────────────────────
+     BORDERS & DIVIDERS
+     ───────────────────────────────────────────────────────────────────────
+  */
+
+  --tiller-border-warm: var(--color-border, #d0c9c1);
+  --tiller-border-warm-light: var(--color-border-subtle, #e2ddd6);
+  --tiller-border-cool: var(--color-border, #d0c9c1);
+
+  /* ───────────────────────────────────────────────────────────────────────
+     SPACING — Golden Ratio (φ = 1.618...)
+     ───────────────────────────────────────────────────────────────────────
+     4px → 8px → 16px → 32px → 64px → 128px
+  */
+
+  --tiller-space-xs: var(--space-xs, 4px);
+  --tiller-space-sm: var(--space-sm, 8px);
+  --tiller-space-md: var(--space-md, 16px);
+  --tiller-space-lg: var(--space-lg, 32px);
+  --tiller-space-xl: var(--space-xl, 64px);
+  --tiller-space-2xl: var(--space-2xl, 128px);
+
+  /* Aliases for common use cases */
+  --tiller-padding-inline: var(--space-lg, 32px);
+  --tiller-padding-block: var(--space-md, 16px);
+  --tiller-gap-columns: var(--space-lg, 32px);
+  --tiller-gap-rows: var(--space-md, 16px);
+
+  /* ───────────────────────────────────────────────────────────────────────
+     TYPOGRAPHY — Font Families
+     ───────────────────────────────────────────────────────────────────────
+  */
+
+  --tiller-font-body: var(
+    --font-body,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif
+  );
+
+  --tiller-font-heading: var(
+    --font-heading,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    sans-serif
+  );
+
+  --tiller-font-mono: var(--font-mono, "Courier New", monospace);
+
+  /* ───────────────────────────────────────────────────────────────────────
+     SHADOWS & ELEVATION
+     ───────────────────────────────────────────────────────────────────────
+  */
+
+  --tiller-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --tiller-shadow-md: 0 4px 6px rgba(0, 0, 0, 0.08);
+  --tiller-shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --tiller-shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.12);
+
+  /* ───────────────────────────────────────────────────────────────────────
+     TRANSITIONS & ANIMATIONS
+     ───────────────────────────────────────────────────────────────────────
+  */
+
+  --tiller-transition-fast: 150ms ease-out;
+  --tiller-transition-normal: 300ms ease-out;
+  --tiller-transition-slow: 500ms ease-out;
+
+  /* ───────────────────────────────────────────────────────────────────────
+     BREAKPOINTS — Responsive Design
+     ───────────────────────────────────────────────────────────────────────
+  */
+
+  --tiller-bp-mobile: 640px;
+  --tiller-bp-tablet: 768px;
+  --tiller-bp-desktop: 1024px;
+  --tiller-bp-wide: 1280px;
+
+  /* ───────────────────────────────────────────────────────────────────────
+     BORDER RADIUS — Shape Consistency
+     ───────────────────────────────────────────────────────────────────────
+  */
+
+  --tiller-radius-sm: var(--radius-sm, 4px);
+  --tiller-radius-md: var(--radius-md, 8px);
+  --tiller-radius-lg: var(--radius-lg, 12px);
+  --tiller-radius-full: var(--radius-full, 9999px);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DARK MODE SUPPORT
+   ═══════════════════════════════════════════════════════════════════════════
+   When @evident-technologies/design-tokens is loaded, it handles dark mode
+   automatically via prefers-color-scheme. This compat layer preserves that. */
+
+@media (prefers-color-scheme: dark) {
+  /* Token system handles dark mode automatically.
+     This fallback ensures --tiller-* variables stay readable in dark mode. */
+  :root {
+    --tiller-text-dark: var(--color-on-surface, #e8e8e8);
+    --tiller-text-mid: var(--color-on-surface-muted, #b8b8b8);
+    --tiller-text-light: var(--color-on-surface-faint, #888888);
+
+    --tiller-surface-cream: var(--color-surface, #1a1a1a);
+    --tiller-surface-white: var(--color-surface-elevated, #2a2a2a);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MIGRATION NOTES
+   ═══════════════════════════════════════════════════════════════════════════
+   
+   This file is intentionally simple and transparent:
+   
+   1. All custom --tiller-* variables continue to work as before
+   2. Each variable maps to an --evident-* equivalent (if available)
+   3. Fallback values preserve original colors if design-tokens package missing
+   4. No changes to any other CSS files required
+   5. Gradual migration: new CSS files use tokens directly, old files use compat
+   
+   To use this in Tillerstead:
+   
+   1. Place this file in: products/tillerstead/assets/css/design-tokens-compat.css
+   2. Import FIRST in your CSS pipeline (before main.css)
+   3. Add to package.json: "@evident-technologies/design-tokens": "workspace:*"
+   4. Existing CSS files: Zero changes needed
+   5. New CSS files: Use --color-sapphire instead of --tiller-primary, etc.
+   
+   Performance: Pure CSS, no JavaScript overhead, no render blocking.
+   
+   ═════════════════════════════════════════════════════════════════════════ */

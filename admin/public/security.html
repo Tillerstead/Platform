@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security Dashboard - Tillerstead Admin</title>
+    <link rel="stylesheet" href="admin-styles.css" />
+    <style>
+      .security-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .security-card {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .security-card h3 {
+        margin-top: 0;
+        color: #2c5282;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .security-card .icon {
+        font-size: 24px;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .status-badge.active {
+        background: #c6f6d5;
+        color: #22543d;
+      }
+
+      .status-badge.warning {
+        background: #feebc8;
+        color: #7c2d12;
+      }
+
+      .status-badge.danger {
+        background: #fed7d7;
+        color: #742a2a;
+      }
+
+      .metric {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .metric:last-child {
+        border-bottom: none;
+      }
+
+      .metric-value {
+        font-weight: 700;
+        font-size: 18px;
+        color: #2d3748;
+      }
+
+      .audit-log {
+        max-height: 400px;
+        overflow-y: auto;
+        background: #f7fafc;
+        border-radius: 4px;
+        padding: 15px;
+      }
+
+      .audit-entry {
+        padding: 10px;
+        margin-bottom: 10px;
+        background: white;
+        border-radius: 4px;
+        border-left: 3px solid #cbd5e0;
+        font-size: 14px;
+      }
+
+      .audit-entry.high {
+        border-left-color: #f6ad55;
+      }
+
+      .audit-entry.critical {
+        border-left-color: #fc8181;
+      }
+
+      .audit-timestamp {
+        color: #718096;
+        font-size: 12px;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      .audit-details {
+        color: #2d3748;
+      }
+
+      .btn-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+      }
+
+      .qr-container {
+        text-align: center;
+        padding: 20px;
+      }
+
+      .qr-code {
+        max-width: 250px;
+        margin: 20px auto;
+        display: block;
+      }
+
+      .backup-codes {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin: 20px 0;
+      }
+
+      .backup-code {
+        background: #f7fafc;
+        padding: 10px;
+        border-radius: 4px;
+        font-family: monospace;
+        text-align: center;
+        border: 1px solid #e2e8f0;
+      }
+
+      .ip-list {
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .ip-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background: #f7fafc;
+        margin-bottom: 5px;
+        border-radius: 4px;
+      }
+
+      .ip-item .remove-btn {
+        color: #e53e3e;
+        cursor: pointer;
+        font-size: 18px;
+        padding: 0 8px;
+      }
+
+      .api-key-item {
+        background: #f7fafc;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+      }
+
+      .api-key-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .api-key-name {
+        font-weight: 600;
+        color: #2d3748;
+      }
+
+      .api-key-hash {
+        font-family: monospace;
+        font-size: 12px;
+        color: #718096;
+      }
+
+      .api-key-stats {
+        display: flex;
+        gap: 20px;
+        font-size: 12px;
+        color: #718096;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+      }
+
+      .close-modal {
+        font-size: 24px;
+        cursor: pointer;
+        color: #718096;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-container">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="sidebar-header">
+          <h2>🔐 Security</h2>
+        </div>
+        <ul class="sidebar-nav">
+          <li><a href="dashboard.html">← Back to Dashboard</a></li>
+          <li><a href="#overview" class="active">Overview</a></li>
+          <li><a href="#2fa">Two-Factor Auth</a></li>
+          <li><a href="#audit">Audit Logs</a></li>
+          <li><a href="#api-keys">API Keys</a></li>
+          <li><a href="#ip-filter">IP Filter</a></li>
+          <li><a href="#roles">User Roles</a></li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header class="content-header">
+          <h1>Security Dashboard</h1>
+          <p>Monitor and manage security settings</p>
+        </header>
+
+        <!-- Overview Section -->
+        <section id="overview">
+          <h2>Security Overview</h2>
+          <div class="security-grid">
+            <div class="security-card">
+              <h3><span class="icon">🛡️</span> Authentication</h3>
+              <div class="metric">
+                <span>2FA Status</span>
+                <span id="2fa-status" class="status-badge">Loading...</span>
+              </div>
+              <div class="metric">
+                <span>Session Security</span>
+                <span class="status-badge active">Active</span>
+              </div>
+              <div class="metric">
+                <span>Rate Limiting</span>
+                <span class="status-badge active">Enabled</span>
+              </div>
+            </div>
+
+            <div class="security-card">
+              <h3><span class="icon">📊</span> Activity Stats</h3>
+              <div class="metric">
+                <span>Login Attempts (24h)</span>
+                <span id="login-attempts" class="metric-value">0</span>
+              </div>
+              <div class="metric">
+                <span>Failed Logins (24h)</span>
+                <span id="failed-logins" class="metric-value">0</span>
+              </div>
+              <div class="metric">
+                <span>Active Sessions</span>
+                <span id="active-sessions" class="metric-value">1</span>
+              </div>
+            </div>
+
+            <div class="security-card">
+              <h3><span class="icon">🔑</span> Access Control</h3>
+              <div class="metric">
+                <span>API Keys</span>
+                <span id="api-key-count" class="metric-value">0</span>
+              </div>
+              <div class="metric">
+                <span>Whitelisted IPs</span>
+                <span id="whitelist-count" class="metric-value">0</span>
+              </div>
+              <div class="metric">
+                <span>Blacklisted IPs</span>
+                <span id="blacklist-count" class="metric-value">0</span>
+              </div>
+            </div>
+
+            <div class="security-card">
+              <h3><span class="icon">⚠️</span> Security Alerts</h3>
+              <div class="metric">
+                <span>High Severity (7d)</span>
+                <span id="high-severity" class="metric-value">0</span>
+              </div>
+              <div class="metric">
+                <span>Suspicious Activity</span>
+                <span id="suspicious-activity" class="metric-value">0</span>
+              </div>
+              <div class="metric">
+                <span>Blocked Attempts</span>
+                <span id="blocked-attempts" class="metric-value">0</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2FA Section -->
+        <section id="2fa">
+          <h2>Two-Factor Authentication</h2>
+          <div class="security-card">
+            <div id="2fa-disabled" style="display: none">
+              <p>Two-factor authentication adds an extra layer of security to your account.</p>
+              <button class="btn btn-primary" onclick="setup2FA()">Enable 2FA</button>
+            </div>
+
+            <div id="2fa-enabled" style="display: none">
+              <p>✅ Two-factor authentication is <strong>enabled</strong></p>
+              <div class="btn-group">
+                <button class="btn btn-secondary" onclick="regenerateBackupCodes()">Regenerate Backup Codes</button>
+                <button class="btn btn-danger" onclick="disable2FA()">Disable 2FA</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Audit Logs -->
+        <section id="audit">
+          <h2>Audit Logs</h2>
+          <div class="security-card">
+            <div style="margin-bottom: 15px">
+              <select id="audit-filter" onchange="filterAuditLogs()">
+                <option value="all">All Events</option>
+                <option value="login">Login Events</option>
+                <option value="file">File Operations</option>
+                <option value="high">High Severity</option>
+              </select>
+            </div>
+            <div id="audit-log" class="audit-log">
+              <p style="text-align: center; color: #718096">Loading audit logs...</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- API Keys -->
+        <section id="api-keys">
+          <h2>API Keys</h2>
+          <div class="security-card">
+            <button class="btn btn-primary" onclick="createAPIKey()">Create New API Key</button>
+            <div id="api-keys-list" style="margin-top: 20px">
+              <p style="text-align: center; color: #718096">No API keys created</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- IP Filter -->
+        <section id="ip-filter">
+          <h2>IP Address Filter</h2>
+          <div class="security-grid">
+            <div class="security-card">
+              <h3>Whitelist</h3>
+              <p style="font-size: 14px; color: #718096">Only these IPs can access admin panel</p>
+              <div style="display: flex; gap: 10px; margin: 15px 0">
+                <input type="text" id="whitelist-ip" placeholder="192.168.1.1" style="flex: 1" />
+                <button class="btn btn-primary" onclick="addToWhitelist()">Add</button>
+              </div>
+              <div id="whitelist" class="ip-list"></div>
+            </div>
+
+            <div class="security-card">
+              <h3>Blacklist</h3>
+              <p style="font-size: 14px; color: #718096">These IPs are blocked from accessing</p>
+              <div style="display: flex; gap: 10px; margin: 15px 0">
+                <input type="text" id="blacklist-ip" placeholder="192.168.1.100" style="flex: 1" />
+                <button class="btn btn-primary" onclick="addToBlacklist()">Add</button>
+              </div>
+              <div id="blacklist" class="ip-list"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- User Roles -->
+        <section id="roles">
+          <h2>User Roles & Permissions</h2>
+          <div class="security-card">
+            <h3>Available Roles</h3>
+            <div id="roles-list"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- 2FA Setup Modal -->
+    <div id="2fa-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Enable Two-Factor Authentication</h2>
+          <span class="close-modal" onclick="close2FAModal()">×</span>
+        </div>
+        <div id="2fa-setup">
+          <p>Scan this QR code with your authenticator app:</p>
+          <div class="qr-container">
+            <img id="qr-code" class="qr-code" alt="QR Code" />
+          </div>
+          <p>Or enter this secret key manually:</p>
+          <div
+            style="
+              background: #f7fafc;
+              padding: 15px;
+              border-radius: 4px;
+              font-family: monospace;
+              text-align: center;
+              margin: 15px 0;
+            "
+          >
+            <code id="secret-key"></code>
+          </div>
+          <p>Enter verification code from your app:</p>
+          <input
+            type="text"
+            id="2fa-token"
+            placeholder="000000"
+            maxlength="6"
+            style="width: 100%; margin-bottom: 15px"
+          />
+          <button class="btn btn-primary" onclick="verify2FA()" style="width: 100%">Verify & Enable</button>
+        </div>
+        <div id="backup-codes-display" style="display: none">
+          <p><strong>⚠️ Save these backup codes in a safe place!</strong></p>
+          <p style="font-size: 14px; color: #718096">
+            You can use these codes if you lose access to your authenticator app.
+          </p>
+          <div id="backup-codes" class="backup-codes"></div>
+          <button class="btn btn-primary" onclick="close2FAModal()" style="width: 100%">Done</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="security-app.js"></script>
+  </body>
+</html>

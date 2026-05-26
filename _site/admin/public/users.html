@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Management - Tillerstead Admin</title>
+    <link rel="stylesheet" href="admin-styles.css" />
+    <style>
+      .users-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .user-table {
+        width: 100%;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .user-table table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .user-table th {
+        background: #f7fafc;
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        color: #2d3748;
+        border-bottom: 2px solid #e2e8f0;
+      }
+
+      .user-table td {
+        padding: 15px;
+        border-bottom: 1px solid #e2e8f0;
+      }
+
+      .user-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .user-table tr:hover {
+        background: #f7fafc;
+      }
+
+      .user-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .user-status.active {
+        background: #c6f6d5;
+        color: #22543d;
+      }
+
+      .user-status.inactive {
+        background: #fed7d7;
+        color: #742a2a;
+      }
+
+      .user-role {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+        background: #e6f2ff;
+        color: #2563eb;
+      }
+
+      .user-role.admin {
+        background: #feebc8;
+        color: #7c2d12;
+      }
+
+      .user-actions {
+        display: flex;
+        gap: 8px;
+      }
+
+      .btn-icon {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+
+      .btn-icon:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-edit {
+        background: #3182ce;
+        color: white;
+      }
+
+      .btn-delete {
+        background: #e53e3e;
+        color: white;
+      }
+
+      .btn-toggle {
+        background: #718096;
+        color: white;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: white;
+        border-radius: 8px;
+        padding: 30px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+      }
+
+      .modal-header h2 {
+        margin: 0;
+      }
+
+      .close-modal {
+        font-size: 24px;
+        cursor: pointer;
+        color: #718096;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #2d3748;
+      }
+
+      .form-group input,
+      .form-group select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #e2e8f0;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #3182ce;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 20px;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #718096;
+      }
+
+      .empty-state-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-value {
+        font-size: 32px;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 8px;
+      }
+
+      .stat-label {
+        color: #718096;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-container">
+      <!-- Sidebar -->
+      <nav class="sidebar">
+        <div class="sidebar-header">
+          <h2>👥 Users</h2>
+        </div>
+        <ul class="sidebar-nav">
+          <li><a href="dashboard.html">← Back to Dashboard</a></li>
+          <li><a href="#users" class="active">All Users</a></li>
+          <li><a href="#sessions">Active Sessions</a></li>
+        </ul>
+      </nav>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="users-header">
+          <div>
+            <h1>User Management</h1>
+            <p>Manage admin users, roles, and access</p>
+          </div>
+          <button class="btn btn-primary" onclick="openCreateUserModal()">+ Create User</button>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="total-users">0</div>
+            <div class="stat-label">Total Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="active-users">0</div>
+            <div class="stat-label">Active Users</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="admin-count">0</div>
+            <div class="stat-label">Administrators</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="active-sessions">0</div>
+            <div class="stat-label">Active Sessions</div>
+          </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="user-table">
+          <table>
+            <thead>
+              <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>2FA</th>
+                <th>Last Login</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="users-tbody">
+              <tr>
+                <td colspan="7" class="empty-state">
+                  <div class="empty-state-icon">👤</div>
+                  <div>Loading users...</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <!-- Create/Edit User Modal -->
+    <div id="user-modal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2 id="modal-title">Create User</h2>
+          <span class="close-modal" onclick="closeUserModal()">×</span>
+        </div>
+        <form id="user-form" onsubmit="saveUser(event)">
+          <input type="hidden" id="edit-username" />
+
+          <div class="form-group">
+            <label for="username">Username *</label>
+            <input
+              type="text"
+              id="username"
+              required
+              pattern="[a-zA-Z0-9_-]{3,20}"
+              title="3-20 characters: letters, numbers, underscore, hyphen"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" required />
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password *</label>
+            <input type="password" id="password" required minlength="8" placeholder="Min 8 characters" />
+            <small style="color: #718096">Leave blank to keep current password (edit mode)</small>
+          </div>
+
+          <div class="form-group">
+            <label for="role">Role *</label>
+            <select id="role" required>
+              <option value="viewer">Viewer (Read-only)</option>
+              <option value="editor">Editor (Edit content)</option>
+              <option value="admin">Admin (Full access)</option>
+            </select>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save User</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="users-app.js"></script>
+  </body>
+</html>

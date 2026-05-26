@@ -1,0 +1,23 @@
+{
+  "_manifest": "evident-repo",
+  "_version": 1,
+  "name": "tillerstead-toolkit",
+  "description": "Contractor calculator hub, inventory management, and catalog connector API.",
+  "role": "support-tool",
+  "family": "Tillerstead",
+  "business": "Tillerstead LLC",
+  "stack": "FastAPI + Python + PostgreSQL",
+  "outputType": "web-app",
+  "exportTargets": ["Railway"],
+  "siteUrl": null,
+  "githubUrl": "https://github.com/Evident-Technologies/platform",
+  "brand": "tillerstead",
+  "packagingStatus": "standalone",
+  "releaseStatus": "beta",
+  "sharedStandardsVersion": "1.0",
+  "tools": ["calculators", "inventory", "catalog-connector"],
+  "owner": "Devon Tyler",
+  "satelliteTier": "support",
+  "catalogVisibility": "listed",
+  "tokenFamily": "tillerstead"
+}

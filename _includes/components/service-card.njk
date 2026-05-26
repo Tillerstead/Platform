@@ -1,0 +1,55 @@
+{# Feature/service card component #}
+{# Usage: 
+  {% set card = {
+    icon: "shield-check",
+    title: "Licensed & Insured",
+    description: "Full general contractor licensing and comprehensive insurance coverage.",
+    href: "/services/licensing"
+  } %}
+  {% include "components/service-card.njk" %}
+#}
+
+<article class="group rounded-xl border border-slate-200 bg-white p-8 shadow-sm motion-safe:transition-all motion-safe:duration-200 motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-md">
+  
+  {# Icon #}
+  {% if card.icon %}
+  <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-amber-50 text-amber-600 mb-4">
+    {% if card.icon == "shield-check" %}
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+    {% elif card.icon == "calculation" %}
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+      </svg>
+    {% elif card.icon == "guide" %}
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C6.5 6.253 2 10.998 2 17.25S6.5 28 12 28s10-4.745 10-10.75S17.5 6.253 12 6.253z"></path>
+      </svg>
+    {% elif card.icon == "tools" %}
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.348 4.652a2.5 2.5 0 00-3.536 0l-.172.172-.534-.534a2.5 2.5 0 00-3.536 0l1.414 1.414.172-.172a.5.5 0 01.707 0l.172.172 1.414-1.414zm6.364 6.364l-9.9 9.9m0 0L3.05 20.95m11.314-11.314l1.414 1.414m-5.656-5.656l1.414 1.414"></path>
+      </svg>
+    {% else %}
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+      </svg>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  {# Content #}
+  <h3 class="text-lg font-semibold text-slate-900 mb-2">{{ card.title }}</h3>
+  <p class="text-slate-600 text-sm leading-relaxed">{{ card.description }}</p>
+
+  {# Link arrow (optional) #}
+  {% if card.href %}
+  <a href="{{ card.href }}" class="inline-flex items-center gap-2 mt-4 text-amber-600 text-sm font-medium group-hover:gap-3 transition-all">
+    Learn more
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+    </svg>
+  </a>
+  {% endif %}
+
+</article>

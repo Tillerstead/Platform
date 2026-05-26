@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Jobs - Tillerstead Admin</title>
+    <link rel="stylesheet" href="/admin-styles.css" />
+    <link rel="stylesheet" href="/admin-premium.css" />
+  </head>
+  <body>
+    <!-- Mobile menu toggle -->
+    <button class="mobile-menu-toggle" id="mobileMenuBtn" aria-label="Toggle navigation menu">&#9776;</button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <h1>&#128295; Tillerstead</h1>
+        <p class="sidebar-subtitle">Admin Panel</p>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="/" class="nav-item">
+          <span class="nav-icon">&#128202;</span>
+          <span class="nav-label">Dashboard</span>
+        </a>
+        <a href="/jobs" class="nav-item active">
+          <span class="nav-icon">&#127959;</span>
+          <span class="nav-label">Jobs</span>
+        </a>
+        <a href="/users" class="nav-item">
+          <span class="nav-icon">&#128101;</span>
+          <span class="nav-label">Users</span>
+        </a>
+        <a href="/security" class="nav-item">
+          <span class="nav-icon">&#128274;</span>
+          <span class="nav-label">Security</span>
+        </a>
+        <a href="/health" class="nav-item">
+          <span class="nav-icon">&#128202;</span>
+          <span class="nav-label">System Health</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <span id="username">Admin</span>
+        </div>
+        <button class="btn-logout" id="logoutBtn">Logout</button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Stats Row -->
+      <header class="page-header">
+        <h2>Job Management</h2>
+        <p class="page-subtitle">Track jobs, estimates, and homeowners &mdash; NJ HIC #13VH10808800</p>
+      </header>
+
+      <div class="stats-grid" id="jobStats">
+        <div class="stat-card">
+          <h4>Total Jobs</h4>
+          <div class="stat-value" id="stat-total">-</div>
+        </div>
+        <div class="stat-card">
+          <h4>Active</h4>
+          <div class="stat-value" id="stat-active">-</div>
+        </div>
+        <div class="stat-card">
+          <h4>Active Value</h4>
+          <div class="stat-value" id="stat-value">-</div>
+        </div>
+        <div class="stat-card">
+          <h4>Leads</h4>
+          <div class="stat-value" id="stat-leads">-</div>
+        </div>
+      </div>
+
+      <!-- Tab Navigation -->
+      <div class="tab-nav" role="tablist">
+        <button class="tab-btn active" data-tab="jobs" role="tab" aria-selected="true">All Jobs</button>
+        <button class="tab-btn" data-tab="estimates" role="tab" aria-selected="false">Estimates</button>
+        <button class="tab-btn" data-tab="homeowners" role="tab" aria-selected="false">Homeowners</button>
+      </div>
+
+      <!-- Jobs Tab -->
+      <section id="tab-jobs" class="tab-panel active" role="tabpanel">
+        <div class="section-header">
+          <div class="filter-row">
+            <select id="statusFilter" class="form-select" aria-label="Filter by status">
+              <option value="">All Statuses</option>
+              <option value="lead">Lead</option>
+              <option value="estimated">Estimated</option>
+              <option value="contracted">Contracted</option>
+              <option value="permitted">Permitted</option>
+              <option value="scheduled">Scheduled</option>
+              <option value="in_progress">In Progress</option>
+              <option value="punch_list">Punch List</option>
+              <option value="completed">Completed</option>
+              <option value="closed">Closed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="newJobBtn">+ New Job</button>
+        </div>
+
+        <div class="table-container">
+          <table class="data-table" id="jobsTable">
+            <thead>
+              <tr>
+                <th>Homeowner</th>
+                <th>Address</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Due</th>
+                <th class="hide-mobile">Lead Paint</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="jobsBody">
+              <tr>
+                <td colspan="7" class="empty-state">Loading jobs&hellip;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Estimates Tab -->
+      <section id="tab-estimates" class="tab-panel" role="tabpanel" hidden>
+        <div class="section-header">
+          <h3>Estimates</h3>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="estimatesTable">
+            <thead>
+              <tr>
+                <th>Estimate #</th>
+                <th>Homeowner</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th>Max Deposit</th>
+                <th class="hide-mobile">Valid Until</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="estimatesBody">
+              <tr>
+                <td colspan="7" class="empty-state">Loading estimates&hellip;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Homeowners Tab -->
+      <section id="tab-homeowners" class="tab-panel" role="tabpanel" hidden>
+        <div class="section-header">
+          <div class="filter-row">
+            <input
+              type="search"
+              id="hwSearch"
+              class="form-input"
+              placeholder="Search homeowners&hellip;"
+              aria-label="Search homeowners"
+            />
+          </div>
+          <button class="btn btn-primary" id="newHomeownerBtn">+ New Homeowner</button>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="homeownersTable">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Phone</th>
+                <th>Email</th>
+                <th>Address</th>
+                <th class="hide-mobile">Source</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="homeownersBody">
+              <tr>
+                <td colspan="6" class="empty-state">Loading homeowners&hellip;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Job Form Modal -->
+      <dialog id="jobModal" class="modal">
+        <div class="modal-content">
+          <header class="modal-header">
+            <h3 id="jobModalTitle">New Job</h3>
+            <button class="modal-close" aria-label="Close">&times;</button>
+          </header>
+          <form id="jobForm" class="modal-form">
+            <input type="hidden" id="jobId" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="jfName">Homeowner Name *</label>
+                <input type="text" id="jfName" required class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="jfPhone">Phone</label>
+                <input type="tel" id="jfPhone" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="jfEmail">Email</label>
+                <input type="email" id="jfEmail" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="jfAddress">Property Address *</label>
+                <input type="text" id="jfAddress" required class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="jfCity">City</label>
+                <input type="text" id="jfCity" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="jfZip">ZIP</label>
+                <input type="text" id="jfZip" class="form-input" maxlength="10" />
+              </div>
+              <div class="form-group">
+                <label for="jfYearBuilt">Year Built</label>
+                <input
+                  type="number"
+                  id="jfYearBuilt"
+                  class="form-input"
+                  min="1700"
+                  max="2030"
+                  placeholder="For lead paint check"
+                />
+              </div>
+              <div class="form-group">
+                <label for="jfStatus">Status</label>
+                <select id="jfStatus" class="form-select">
+                  <option value="lead">Lead</option>
+                  <option value="estimated">Estimated</option>
+                  <option value="contracted">Contracted</option>
+                  <option value="permitted">Permitted</option>
+                  <option value="scheduled">Scheduled</option>
+                  <option value="in_progress">In Progress</option>
+                  <option value="punch_list">Punch List</option>
+                  <option value="completed">Completed</option>
+                  <option value="closed">Closed</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="jfTotal">Total Price ($)</label>
+                <input type="number" id="jfTotal" class="form-input" min="0" step="0.01" />
+              </div>
+              <div class="form-group">
+                <label for="jfDeposit">Deposit Collected ($)</label>
+                <input type="number" id="jfDeposit" class="form-input" min="0" step="0.01" />
+              </div>
+              <div class="form-group">
+                <label for="jfPaid">Amount Paid ($)</label>
+                <input type="number" id="jfPaid" class="form-input" min="0" step="0.01" />
+              </div>
+              <div class="form-group full-width">
+                <label for="jfScope">Scope of Work</label>
+                <textarea id="jfScope" class="form-textarea" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="cancelJobBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save Job</button>
+            </div>
+          </form>
+        </div>
+      </dialog>
+
+      <!-- Homeowner Form Modal -->
+      <dialog id="hwModal" class="modal">
+        <div class="modal-content">
+          <header class="modal-header">
+            <h3 id="hwModalTitle">New Homeowner</h3>
+            <button class="modal-close" aria-label="Close">&times;</button>
+          </header>
+          <form id="hwForm" class="modal-form">
+            <input type="hidden" id="hwId" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="hwName">Name *</label>
+                <input type="text" id="hwName" required class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="hwPhone">Phone</label>
+                <input type="tel" id="hwPhone" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="hwEmail">Email</label>
+                <input type="email" id="hwEmail" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="hwAddr">Address</label>
+                <input type="text" id="hwAddr" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="hwCity">City</label>
+                <input type="text" id="hwCity" class="form-input" />
+              </div>
+              <div class="form-group">
+                <label for="hwZip">ZIP</label>
+                <input type="text" id="hwZip" class="form-input" maxlength="10" />
+              </div>
+              <div class="form-group">
+                <label for="hwYearBuilt">Year Built</label>
+                <input type="number" id="hwYearBuilt" class="form-input" min="1700" max="2030" />
+              </div>
+              <div class="form-group">
+                <label for="hwSource">Source</label>
+                <select id="hwSource" class="form-select">
+                  <option value="direct">Direct</option>
+                  <option value="referral">Referral</option>
+                  <option value="website">Website</option>
+                  <option value="google">Google</option>
+                </select>
+              </div>
+              <div class="form-group full-width">
+                <label for="hwNotes">Notes</label>
+                <textarea id="hwNotes" class="form-textarea" rows="3"></textarea>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" id="cancelHwBtn">Cancel</button>
+              <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </dialog>
+    </main>
+
+    <script src="/jobs-app.js"></script>
+  </body>
+</html>
