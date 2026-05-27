@@ -104,7 +104,7 @@
     "critical": "7.2.1",
     "cssnano": "7.1.5",
     "cssnano-preset-advanced": "7.0.12",
-    "eslint": "^9.17.0",
+    "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "fast-xml-parser": "5.7.0",
     "globals": "14.0.0",
